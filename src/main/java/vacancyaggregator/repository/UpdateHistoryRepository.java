@@ -1,10 +1,14 @@
 package vacancyaggregator.repository;
 
 import vacancyaggregator.database.DatabaseManager;
+import vacancyaggregator.model.UpdateHistory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpdateHistoryRepository {
 
@@ -28,5 +32,36 @@ public class UpdateHistoryRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<UpdateHistory> findAll() {
+
+        List<UpdateHistory> history = new ArrayList<>();
+
+        String sql = """
+            SELECT *
+            FROM update_history
+            ORDER BY update_date DESC
+            """;
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+
+                history.add(new UpdateHistory(
+                        resultSet.getString("source_name"),
+                        resultSet.getString("search_text"),
+                        resultSet.getInt("added_count"),
+                        resultSet.getString("update_date")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return history;
     }
 }

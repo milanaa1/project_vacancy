@@ -1,4 +1,10 @@
 package vacancyaggregator.parser;
 
-public class VacancyParser {
+import vacancyaggregator.model.Vacancy;
+
+import java.util.List;
+
+public interface VacancyParser {
+
+    List<Vacancy> parse(String searchText);
 }
